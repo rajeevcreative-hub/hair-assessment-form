@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Hair Assessment</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/intl-tel-input@18.2.1/build/css/intlTelInput.css">
+  <link rel="stylesheet" href="styles.css" />
+</head>
+
+<body>
+
+<header class="header">
+  <img src="images/logo.png" class="logo" alt="Logo" />
+  <a href="https://theuroots.com/" class="return-btn">Return to website</a>
+</header>
+
+<div class="container">
+
+  <div class="top-steps">
+    <div class="top-step active">Personal & Hair Loss History</div>
+    <div class="top-step">Symptoms & Health Info</div>
+    <div class="top-step">Treatment History & Goals</div>
+    <div class="top-step">Contact & Submission</div>
+  </div>
+
+  <div class="progress-bar">
+    <div class="progress-fill" id="progressFill"></div>
+  </div>
+
+  <form id="assessmentForm">
+
+    <!-- STEP 0 -->
+    <section class="step active" data-stage="0">
+      <h2>Enter your details</h2>
+
+      <div class="grid-2">
+        <div class="form-group">
+          <input type="text" name="full_name" placeholder="Full Name">
+          <div class="error-text"></div>
+        </div>
+
+        <div class="form-group">
+          <input type="number" name="age" placeholder="Age">
+          <div class="error-text"></div>
+        </div>
+
+        <div class="form-group">
+          <input type="tel" name="mobile" placeholder="Mobile Number">
+          <div class="error-text"></div>
+        </div>
+      </div>
+
+      <div class="nav">
+        <button type="button" class="next">Next</button>
+      </div>
+    </section>
+
+    <!-- STEP 1 -->
+    <section class="step" data-stage="0">
+      <h2>Select Your Gender</h2>
+
+      <div class="form-group" data-required="radio">
+        <div class="card-grid gender-grid">
+          <label class="card gender-card">
+            <input type="radio" name="gender" value="Male">
+            <img src="images/male.png">
+            <span>Male</span>
+          </label>
+
+          <label class="card gender-card">
+            <input type="radio" name="gender" value="Female">
+            <img src="images/female.png">
+            <span>Female</span>
+          </label>
+        </div>
+        <div class="error-text"></div>
+      </div>
+
+      <div class="nav">
+        <button type="button" class="prev">Previous</button>
+        <button type="button" class="next">Next</button>
+      </div>
+    </section>
+
+    <!-- STEP 2 -->
+    <section class="step" data-stage="0">
+      <h2>When did you notice hair loss?</h2>
+
+      <div class="form-group" data-required="radio">
+        <div class="card-grid">
+          <label class="card"><input type="radio" name="hairloss_duration" value="Less than 1 month"><span>Less than 1 month</span></label>
+          <label class="card"><input type="radio" name="hairloss_duration" value="1–6 months"><span>1–6 months</span></label>
+          <label class="card"><input type="radio" name="hairloss_duration" value="6–12 months"><span>6–12 months</span></label>
+          <label class="card"><input type="radio" name="hairloss_duration" value="Over 1 year"><span>Over 1 year</span></label>
+        </div>
+        <div class="error-text"></div>
+      </div>
+
+      <div class="nav">
+        <button type="button" class="prev">Previous</button>
+        <button type="button" class="next">Next</button>
+      </div>
+    </section>
+
+    <!-- STEP 3 -->
+    <section class="step" data-stage="0">
+      <h2>Select Hair Loss Pattern</h2>
+
+      <div class="form-group" data-required="radio">
+        <div class="card-grid hair-pattern-grid">
+
+          <label class="card hair-card"><input type="radio" name="hairloss_pattern" value="Receding hairline"><div class="hair-text">Receding hairline</div><div class="hair-images"><img src="images/stage1.png"></div></label>
+          <label class="card hair-card"><input type="radio" name="hairloss_pattern" value="Thinning crown"><div class="hair-text">Thinning crown</div><div class="hair-images"><img src="images/step2.png"></div></label>
+          <label class="card hair-card"><input type="radio" name="hairloss_pattern" value="Crown & hairline"><div class="hair-text">Both crown and hairline</div><div class="hair-images"><img src="images/step3.png"></div></label>
+          <label class="card hair-card"><input type="radio" name="hairloss_pattern" value="Patchy"><div class="hair-text">Patchy hair loss</div><div class="hair-images"><img src="images/step4.png"></div></label>
+          <label class="card hair-card"><input type="radio" name="hairloss_pattern" value="Diffuse"><div class="hair-text">Diffuse thinning</div><div class="hair-images"><img src="images/step5.png"></div></label>
+          <label class="card hair-card"><input type="radio" name="hairloss_pattern" value="Complete baldness"><div class="hair-text">Complete baldness</div><div class="hair-images"><img src="images/step6.png"></div></label>
+
+        </div>
+        <div class="error-text"></div>
+      </div>
+
+      <div class="nav">
+        <button type="button" class="prev">Previous</button>
+        <button type="button" class="next">Next</button>
+      </div>
+    </section>
+
+    <!-- STEP 4 -->
+    <section class="step" data-stage="0">
+      <h2>Is your hair loss</h2>
+
+      <div class="form-group" data-required="radio">
+        <div class="card-grid">
+          <label class="card"><input type="radio" name="hairloss_speed" value="Gradual"><span>Gradual over time</span></label>
+          <label class="card"><input type="radio" name="hairloss_speed" value="Sudden"><span>Sudden or rapid</span></label>
+        </div>
+        <div class="error-text"></div>
+      </div>
+
+      <div class="nav">
+        <button type="button" class="prev">Previous</button>
+        <button type="button" class="next">Next</button>
+      </div>
+    </section>
+
+    <!-- STEP 5 -->
+    <section class="step" data-stage="1">
+      <h2>Scalp Symptoms</h2>
+
+      <div class="form-group" data-required="checkbox">
+        <div class="chip-grid">
+          <label class="chip"><input type="checkbox" name="scalp_symptoms" value="Itching"><span>Itching</span></label>
+          <label class="chip"><input type="checkbox" name="scalp_symptoms" value="Redness"><span>Redness</span></label>
+          <label class="chip"><input type="checkbox" name="scalp_symptoms" value="Dandruff"><span>Dandruff</span></label>
+          <label class="chip"><input type="checkbox" name="scalp_symptoms" value="Painful bumps"><span>Painful bumps</span></label>
+          <label class="chip"><input type="checkbox" name="scalp_symptoms" value="None"><span>None</span></label>
+        </div>
+        <div class="error-text"></div>
+      </div>
+
+      <div class="nav">
+        <button type="button" class="prev">Previous</button>
+        <button type="button" class="next">Next</button>
+      </div>
+    </section>
+
+    <!-- STEP 6 -->
+    <section class="step" data-stage="1">
+      <h2>Medical Conditions</h2>
+
+      <div class="form-group" data-required="checkbox">
+        <div class="chip-grid">
+          <label class="chip"><input type="checkbox" name="medical_conditions" value="Blood pressure"><span>High or low blood pressure</span></label>
+          <label class="chip"><input type="checkbox" name="medical_conditions" value="Prostate"><span>Prostate-related issues</span></label>
+          <label class="chip"><input type="checkbox" name="medical_conditions" value="Mental health"><span>Mental health conditions</span></label>
+          <label class="chip"><input type="checkbox" name="medical_conditions" value="Pregnancy planning"><span>Trying for a baby</span></label>
+          <label class="chip"><input type="checkbox" name="medical_conditions" value="Asthma"><span>Asthma</span></label>
+          <label class="chip"><input type="checkbox" name="medical_conditions" value="None"><span>None</span></label>
+        </div>
+        <div class="error-text"></div>
+      </div>
+
+      <div class="nav">
+        <button type="button" class="prev">Previous</button>
+        <button type="button" class="next">Next</button>
+      </div>
+    </section>
+
+    <!-- STEP 7 -->
+    <section class="step" data-stage="1">
+      <h2>Medications or supplements</h2>
+
+      <div class="form-group">
+        <input type="text" name="medications" placeholder="List them or type 'No'">
+        <div class="error-text"></div>
+      </div>
+
+      <h2 style="margin-top:32px;">Allergies or intolerances</h2>
+
+      <div class="form-group" data-required="radio">
+        <div class="card-grid">
+          <label class="card"><input type="radio" name="allergies" value="Finasteride"><span>Finasteride</span></label>
+          <label class="card"><input type="radio" name="allergies" value="Minoxidil"><span>Minoxidil</span></label>
+          <label class="card"><input type="radio" name="allergies" value="Lactose"><span>Lactose</span></label>
+          <label class="card"><input type="radio" name="allergies" value="None"><span>None</span></label>
+        </div>
+        <div class="error-text"></div>
+      </div>
+
+      <div class="nav">
+        <button type="button" class="prev">Previous</button>
+        <button type="button" class="next">Next</button>
+      </div>
+    </section>
+
+    <!-- STEP 8 -->
+    <section class="step" data-stage="2">
+      <h2>Previous Treatments</h2>
+
+      <div class="form-group" data-required="checkbox">
+        <div class="chip-grid">
+          <label class="chip"><input type="checkbox" name="previous_treatments" value="Minoxidil"><span>Minoxidil</span></label>
+          <label class="chip"><input type="checkbox" name="previous_treatments" value="Finasteride"><span>Finasteride</span></label>
+          <label class="chip"><input type="checkbox" name="previous_treatments" value="Herbal"><span>Herbal / oils</span></label>
+          <label class="chip"><input type="checkbox" name="previous_treatments" value="PRP"><span>PRP / Laser</span></label>
+          <label class="chip"><input type="checkbox" name="previous_treatments" value="None"><span>None</span></label>
+        </div>
+        <div class="error-text"></div>
+      </div>
+
+      <div class="nav">
+        <button type="button" class="prev">Previous</button>
+        <button type="button" class="next">Next</button>
+      </div>
+    </section>
+
+    <!-- STEP 9 -->
+    <section class="step" data-stage="2">
+      <h2>Treatment Goal</h2>
+
+      <div class="form-group" data-required="radio">
+        <div class="card-grid">
+          <label class="card"><input type="radio" name="treatment_goal" value="Stop hair loss"><span>Stop hair loss</span></label>
+          <label class="card"><input type="radio" name="treatment_goal" value="Regrow hair"><span>Regrow hair</span></label>
+          <label class="card"><input type="radio" name="treatment_goal" value="Increase density"><span>Increase density</span></label>
+          <label class="card"><input type="radio" name="treatment_goal" value="Not sure"><span>Not sure / Expert advice</span></label>
+        </div>
+        <div class="error-text"></div>
+      </div>
+
+      <div class="nav">
+        <button type="button" class="prev">Previous</button>
+        <button type="button" class="next">Next</button>
+      </div>
+    </section>
+
+    <!-- STEP 10 -->
+    <section class="step" data-stage="3">
+      <h2>Contact Details</h2>
+
+      <div class="form-group">
+        <input type="email" name="email" placeholder="Email">
+        <div class="error-text"></div>
+      </div>
+
+      <h2>Share your scalp pictures</h2>
+<p style="text-align:center; font-size:14px; color:#666; margin-bottom:16px;">
+  Front, Side, Back & Top
+</p>
+
+<div class="upload-box">
+  <label class="upload-label">
+    <input
+      type="file"
+      id="uploadImage"
+      name="scalp_images"
+      accept="image/png, image/jpeg"
+      multiple
+    />
+
+    <div class="upload-content">
+      <img src="images/upload.png" alt="Upload">
+      <p>
+        Drag & drop images or <span>Browse</span><br>
+        <small>JPG or PNG • You can upload multiple images</small>
+      </p>
+    </div>
+  </label>
+</div>
+
+
+      <div class="nav">
+        <button type="button" class="prev">Previous</button>
+        <button type="submit" class="submit">Submit</button>
+      </div>
+    </section>
+
+    <!-- SUCCESS -->
+    <section class="step success" data-stage="3">
+      <h2>Thank You</h2>
+      <p>Your assessment has been submitted.</p>
+    </section>
+
+  </form>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/intl-tel-input@18.2.1/build/js/intlTelInput.min.js"></script>
+<script src="script.js"></script>
+
+</body>
+</html>
