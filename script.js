@@ -1,5 +1,5 @@
 // =========================
-// LeadSquared Config (GLOBAL)
+// LeadSquared Config
 // =========================
 const LEADSQUARED_ACCESS_KEY = "sample";
 const LEADSQUARED_SECRET_KEY = "sample";
@@ -32,7 +32,7 @@ document.addEventListener('DOMContentLoaded', () => {
       "https://cdn.jsdelivr.net/npm/intl-tel-input@18.2.1/build/js/utils.js"
   });
 
-  // Allow ONLY digits + enforce India = 10 digits
+  // Allow ONLY digits + India = 10 digits
   mobileInput.addEventListener('input', () => {
     const country = iti.getSelectedCountryData();
     let digits = mobileInput.value.replace(/\D/g, '');
@@ -104,14 +104,18 @@ document.addEventListener('DOMContentLoaded', () => {
         }
       }
 
-      if (group.dataset.required === 'radio' &&
-          !group.querySelector('input[type="radio"]:checked')) {
+      if (
+        group.dataset.required === 'radio' &&
+        !group.querySelector('input[type="radio"]:checked')
+      ) {
         error.textContent = 'Please select an option';
         isValid = false;
       }
 
-      if (group.dataset.required === 'checkbox' &&
-          !group.querySelector('input[type="checkbox"]:checked')) {
+      if (
+        group.dataset.required === 'checkbox' &&
+        !group.querySelector('input[type="checkbox"]:checked')
+      ) {
         error.textContent = 'Select at least one option';
         isValid = false;
       }
@@ -121,34 +125,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     return isValid;
   }
-
-  /* =========================
-     NAVIGATION
-  ========================= */
-  document.addEventListener('click', e => {
-
-    if (e.target.classList.contains('next')) {
-  if (!validateStep(steps[current])) return;
-
-  // 🔥 PARTIAL LEAD SEND (ONLY AFTER STEP 0)
-  if (current === 0) {
-    // Ensure latest values are saved
-    saveState();
-
-    // Send partial lead
-    sendPartialLead(formState);
-  }
-
-  current++;
-  showStep(current);
-}
-
-
-    if (e.target.classList.contains('prev')) {
-      current--;
-      showStep(current);
-    }
-  });
 
   /* =========================
      SAVE STATE
@@ -168,9 +144,8 @@ document.addEventListener('DOMContentLoaded', () => {
         if (input.checked) formState[input.name] = input.value;
       }
       else if (input.type === 'tel') {
-  const digits = input.value.replace(/\D/g, '');
-  formState[input.name] = digits;
-}
+        formState[input.name] = input.value.replace(/\D/g, '');
+      }
       else {
         formState[input.name] = input.value;
       }
@@ -195,9 +170,6 @@ document.addEventListener('DOMContentLoaded', () => {
       else if (input.type === 'checkbox') {
         input.checked = formState[input.name]?.includes(input.value);
       }
-      else if (input.type === 'tel') {
-  input.value = formState[input.name];
-}
       else {
         input.value = formState[input.name];
       }
@@ -205,31 +177,75 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   /* =========================
-     NONE CHECKBOX LOGIC
+     PARTIAL LEAD (AFTER STEP 0)
   ========================= */
-  document.addEventListener('change', e => {
-    if (e.target.type !== 'checkbox') return;
+  function sendPartialLead() {
+    if (localStorage.getItem('partialLeadSent') === 'true') return;
+    if (!formState.mobile) return;
 
-    const chip = e.target.closest('.chip');
-    const group = chip?.closest('.chip-grid');
-    if (!group) return;
+    const payload = [
+      { Attribute: "FirstName", Value: formState.full_name || "" },
+      { Attribute: "Age", Value: formState.age || "" },
+      { Attribute: "Phone", Value: formState.mobile },
+      { Attribute: "LeadSource", Value: "Hair Assessment - Partial" },
+      { Attribute: "LeadStage", Value: "Incomplete" }
+    ];
 
-    const isNone = chip.innerText.trim().toLowerCase() === 'none';
-    const checkboxes = group.querySelectorAll('input[type="checkbox"]');
+    sendToLeadSquared(payload);
+    localStorage.setItem('partialLeadSent', 'true');
+  }
 
-    if (isNone && e.target.checked) {
-      checkboxes.forEach(cb => cb !== e.target && (cb.checked = false));
+  /* =========================
+     NAVIGATION
+  ========================= */
+  document.addEventListener('click', e => {
+
+    if (e.target.classList.contains('next')) {
+      if (!validateStep(steps[current])) return;
+
+      if (current === 0) {
+        saveState();
+        sendPartialLead();
+      }
+
+      current++;
+      showStep(current);
     }
 
-    if (!isNone && e.target.checked) {
-      checkboxes.forEach(cb => {
-        if (cb.closest('.chip')?.innerText.trim().toLowerCase() === 'none') {
-          cb.checked = false;
-        }
-      });
+    if (e.target.classList.contains('prev')) {
+      current--;
+      showStep(current);
     }
+  });
 
-    saveState();
+  /* =========================
+     SUBMIT (FULL LEAD)
+  ========================= */
+  form.addEventListener('submit', e => {
+    e.preventDefault();
+    if (!validateStep(steps[current])) return;
+
+    const payload = [
+      { Attribute: "FirstName", Value: formState.full_name || "" },
+      { Attribute: "Age", Value: formState.age || "" },
+      { Attribute: "Phone", Value: formState.mobile || "" },
+      { Attribute: "Gender", Value: formState.gender || "" },
+      { Attribute: "HairLossPattern", Value: formState.pattern || "" },
+      { Attribute: "HairLossDuration", Value: formState.duration || "" },
+      { Attribute: "Goal", Value: formState.goal || "" },
+      { Attribute: "EmailAddress", Value: formState.email || "" },
+      { Attribute: "LeadSource", Value: "Hair Assessment - Completed" },
+      { Attribute: "LeadStage", Value: "Completed" }
+    ];
+
+    sendToLeadSquared(payload);
+
+    steps.forEach(step => step.classList.remove('active'));
+    document.querySelector('.step.success').classList.add('active');
+    progress.style.width = '100%';
+
+    localStorage.removeItem('hairAssessmentData');
+    localStorage.removeItem('partialLeadSent');
   });
 
   /* =========================
@@ -239,20 +255,8 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 /* =========================
-   LEADSQUARED SEND (READY)
+   LEADSQUARED SEND
 ========================= */
-
-
-function buildPartialLeadPayload(formState) {
-  return [
-    { Attribute: "FirstName", Value: formState.full_name || "" },
-    { Attribute: "Age", Value: formState.age || "" },
-    { Attribute: "Phone", Value: formState.mobile || "" },
-    { Attribute: "LeadSource", Value: "Hair Assessment - Partial" },
-    { Attribute: "LeadStage", Value: "Incomplete" }
-  ];
-}
-
 function sendToLeadSquared(payload) {
   const url =
     `https://api-${LEADSQUARED_REGION}.leadsquared.com/v2/LeadManagement.svc/Lead.Create` +
@@ -266,61 +270,4 @@ function sendToLeadSquared(payload) {
     .then(res => res.json())
     .then(data => console.log("LeadSquared SUCCESS:", data))
     .catch(err => console.error("LeadSquared ERROR:", err));
-}
-
-function sendPartialLead(formState) {
-  const alreadySent = localStorage.getItem('partialLeadSent');
-
-  if (alreadySent === 'true') return;
-
-  // Only send if mobile exists (critical)
-  if (!formState.mobile) return;
-
-  const payload = buildPartialLeadPayload(formState);
-
-  console.log("Sending PARTIAL lead:", payload);
-
-  sendToLeadSquared(payload);
-
-  localStorage.setItem('partialLeadSent', 'true');
-  // Override lead type
-payload.push(
-  { Attribute: "LeadSource", Value: "Hair Assessment - Completed" },
-  { Attribute: "LeadStage", Value: "Completed" }
-);
-
-sendToLeadSquared(payload);
-
-// Cleanup
-localStorage.removeItem('hairAssessmentData');
-localStorage.removeItem('partialLeadSent');
-}
-
-
-function buildLeadSquaredPayload(type = "partial") {
-  const data = JSON.parse(localStorage.getItem('hairAssessmentData')) || {};
-
-  // Base payload (minimum required by LeadSquared)
-  const payload = {
-    FirstName: data["Full Name"] || data["full name"] || "",
-    Phone: data["mobile"] || "",
-    Age: data["Age"] || "",
-    LeadSource: "Hair Assessment Form",
-    LeadStage: type === "partial" ? "Partial Lead" : "Complete Lead"
-  };
-
-  // Add extended fields ONLY for full submission
-  if (type === "full") {
-    payload.Gender = data.gender || "";
-    payload.HairLossDuration = data.duration || "";
-    payload.HairLossPattern = data.pattern || "";
-    payload.LossType = data.lossType || "";
-    payload.ScalpSymptoms = (data.scalpSymptoms || []).join(", ");
-    payload.MedicalConditions = (data.medicalConditions || []).join(", ");
-    payload.PreviousTreatments = (data.previousTreatments || []).join(", ");
-    payload.Goal = data.goal || "";
-    payload.EmailAddress = data.email || "";
-  }
-
-  return payload;
 }
