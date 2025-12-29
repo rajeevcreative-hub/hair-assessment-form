@@ -272,27 +272,33 @@
 
       <h2>Share your scalp pictures</h2>
 <p style="text-align:center; font-size:14px; color:#666; margin-bottom:16px;">
-  Front, Side, Back & Top
+  Your head – Front, Side, Back & Top
 </p>
 
 <div class="upload-box">
-  <label class="upload-label">
-    <input
-      type="file"
-      id="uploadImage"
-      name="scalp_images"
-      accept="image/png, image/jpeg"
-      multiple
-    />
 
+  <!-- FILE INPUT (MUST EXIST & HAVE ID) -->
+  <input
+    type="file"
+    id="uploadImage"
+    name="scalp_images"
+    accept="image/png, image/jpeg"
+    multiple
+  />
+
+  <!-- LABEL MUST POINT TO INPUT -->
+  <label for="uploadImage">
     <div class="upload-content">
       <img src="images/upload.png" alt="Upload">
+
+      <!-- THIS <p> IS WHAT JS UPDATES -->
       <p>
         Drag & drop images or <span>Browse</span><br>
         <small>JPG or PNG • You can upload multiple images</small>
       </p>
     </div>
   </label>
+
 </div>
 
 

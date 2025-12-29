@@ -10,17 +10,21 @@ const LEADSQUARED_REGION = "IN21";
 // =========================
 document.addEventListener('DOMContentLoaded', () => {
 
+  /* =========================
+     ELEMENTS & STATE
+  ========================= */
   const steps = document.querySelectorAll('.step');
   const topSteps = document.querySelectorAll('.top-step');
   const progress = document.getElementById('progressFill');
   const form = document.getElementById('assessmentForm');
   const mobileInput = document.querySelector('input[type="tel"]');
+  const uploadInput = document.getElementById('uploadImage');
 
   let current = 0;
   let formState = JSON.parse(localStorage.getItem('hairAssessmentData')) || {};
 
   /* =========================
-     PHONE INPUT (INTL TEL)
+     PHONE INPUT
   ========================= */
   const iti = window.intlTelInput(mobileInput, {
     initialCountry: "in",
@@ -32,7 +36,7 @@ document.addEventListener('DOMContentLoaded', () => {
       "https://cdn.jsdelivr.net/npm/intl-tel-input@18.2.1/build/js/utils.js"
   });
 
-  // Allow ONLY digits + India = 10 digits
+  // Allow only digits, India max 10
   mobileInput.addEventListener('input', () => {
     const country = iti.getSelectedCountryData();
     let digits = mobileInput.value.replace(/\D/g, '');
@@ -40,7 +44,6 @@ document.addEventListener('DOMContentLoaded', () => {
     if (country.iso2 === 'in' && digits.length > 10) {
       digits = digits.slice(0, 10);
     }
-
     mobileInput.value = digits;
   });
 
@@ -60,7 +63,7 @@ document.addEventListener('DOMContentLoaded', () => {
       step.classList.toggle('active', i === index);
     });
 
-    restoreStepValues(steps[index]);
+    restoreState(steps[index]);
     updateTopStage(index);
     updateProgress(index);
   }
@@ -81,53 +84,44 @@ document.addEventListener('DOMContentLoaded', () => {
      VALIDATION
   ========================= */
   function validateStep(stepEl) {
-    let isValid = true;
+    let valid = true;
 
     stepEl.querySelectorAll('.form-group').forEach(group => {
       const error = group.querySelector('.error-text');
       if (error) error.textContent = '';
-      group.classList.remove('shake');
 
       const input = group.querySelector(
         'input:not([type="radio"]):not([type="checkbox"])'
       );
 
       if (input) {
-        if (input.type === 'tel') {
-          if (!iti.isValidNumber()) {
-            error.textContent = 'Enter a valid mobile number';
-            isValid = false;
-          }
-        } else if (!input.value.trim()) {
+        if (input.type === 'tel' && !iti.isValidNumber()) {
+          error.textContent = 'Enter a valid mobile number';
+          valid = false;
+        } else if (input.type !== 'tel' && !input.value.trim()) {
           error.textContent = 'This field is required';
-          isValid = false;
+          valid = false;
         }
       }
 
-      if (
-        group.dataset.required === 'radio' &&
-        !group.querySelector('input[type="radio"]:checked')
-      ) {
+      if (group.dataset.required === 'radio' &&
+          !group.querySelector('input[type="radio"]:checked')) {
         error.textContent = 'Please select an option';
-        isValid = false;
+        valid = false;
       }
 
-      if (
-        group.dataset.required === 'checkbox' &&
-        !group.querySelector('input[type="checkbox"]:checked')
-      ) {
+      if (group.dataset.required === 'checkbox' &&
+          !group.querySelector('input[type="checkbox"]:checked')) {
         error.textContent = 'Select at least one option';
-        isValid = false;
+        valid = false;
       }
-
-      if (!isValid) group.classList.add('shake');
     });
 
-    return isValid;
+    return valid;
   }
 
   /* =========================
-     SAVE STATE
+     SAVE / RESTORE STATE
   ========================= */
   function saveState() {
     document.querySelectorAll('input').forEach(input => {
@@ -140,8 +134,8 @@ document.addEventListener('DOMContentLoaded', () => {
           : formState[input.name] =
               formState[input.name].filter(v => v !== input.value);
       }
-      else if (input.type === 'radio') {
-        if (input.checked) formState[input.name] = input.value;
+      else if (input.type === 'radio' && input.checked) {
+        formState[input.name] = input.value;
       }
       else if (input.type === 'tel') {
         formState[input.name] = input.value.replace(/\D/g, '');
@@ -154,13 +148,7 @@ document.addEventListener('DOMContentLoaded', () => {
     localStorage.setItem('hairAssessmentData', JSON.stringify(formState));
   }
 
-  document.addEventListener('input', saveState);
-  document.addEventListener('change', saveState);
-
-  /* =========================
-     RESTORE STATE
-  ========================= */
-  function restoreStepValues(stepEl) {
+  function restoreState(stepEl) {
     stepEl.querySelectorAll('input').forEach(input => {
       if (!(input.name in formState)) return;
 
@@ -173,6 +161,53 @@ document.addEventListener('DOMContentLoaded', () => {
       else {
         input.value = formState[input.name];
       }
+    });
+  }
+
+  document.addEventListener('input', saveState);
+  document.addEventListener('change', saveState);
+
+  /* =========================
+     NONE CHECKBOX LOGIC (FINAL)
+  ========================= */
+  document.addEventListener('change', e => {
+    if (e.target.type !== 'checkbox') return;
+
+    const chip = e.target.closest('.chip');
+    const grid = chip?.closest('.chip-grid');
+    if (!grid) return;
+
+    const label = chip.querySelector('span')?.innerText.trim().toLowerCase();
+    const checkboxes = grid.querySelectorAll('input[type="checkbox"]');
+
+    if (label === 'none' && e.target.checked) {
+      checkboxes.forEach(cb => cb !== e.target && (cb.checked = false));
+    }
+
+    if (label !== 'none' && e.target.checked) {
+      checkboxes.forEach(cb => {
+        const text = cb.closest('.chip')?.querySelector('span')?.innerText.trim().toLowerCase();
+        if (text === 'none') cb.checked = false;
+      });
+    }
+
+    saveState();
+  });
+
+  /* =========================
+     FILE UPLOAD UI (FINAL FIX)
+  ========================= */
+  if (uploadInput) {
+    uploadInput.addEventListener('change', () => {
+      const files = Array.from(uploadInput.files);
+      if (!files.length) return;
+
+      const textBlock = document.querySelector('label[for="uploadImage"] p');
+      if (!textBlock) return;
+
+      let html = `<strong>${files.length} image${files.length > 1 ? 's' : ''} selected</strong>`;
+      files.forEach(f => html += `<small>• ${f.name}</small><br>`);
+      textBlock.innerHTML = html;
     });
   }
 
@@ -244,12 +279,11 @@ document.addEventListener('DOMContentLoaded', () => {
     document.querySelector('.step.success').classList.add('active');
     progress.style.width = '100%';
 
-    localStorage.removeItem('hairAssessmentData');
-    localStorage.removeItem('partialLeadSent');
+    localStorage.clear();
   });
 
   /* =========================
-     INITIAL LOAD
+     INIT
   ========================= */
   showStep(current);
 });
@@ -271,62 +305,3 @@ function sendToLeadSquared(payload) {
     .then(data => console.log("LeadSquared SUCCESS:", data))
     .catch(err => console.error("LeadSquared ERROR:", err));
 }
-
-/* =========================
-   FILE UPLOAD UI FEEDBACK
-========================= */
-document.addEventListener('change', e => {
-  if (e.target.id !== 'uploadImage') return;
-
-  const files = Array.from(e.target.files);
-  if (!files.length) return;
-
-  const label = document.querySelector('label[for="uploadImage"] p');
-  if (!label) return;
-
-  let html = `<strong>${files.length} image(s) selected</strong><br>`;
-  files.forEach(file => {
-    html += `<small>• ${file.name}</small><br>`;
-  });
-
-  label.innerHTML = html;
-});
-
-
-/* =========================
-   NONE CHECKBOX LOGIC (FIXED)
-========================= */
-document.addEventListener('change', e => {
-  if (e.target.type !== 'checkbox') return;
-
-  const chip = e.target.closest('.chip');
-  const grid = chip?.closest('.chip-grid');
-  if (!grid) return;
-
-  const labelText = chip.querySelector('span')?.innerText
-    .trim()
-    .toLowerCase();
-
-  const checkboxes = grid.querySelectorAll('input[type="checkbox"]');
-
-  // If "None" checked → uncheck all others
-  if (labelText === 'none' && e.target.checked) {
-    checkboxes.forEach(cb => {
-      if (cb !== e.target) cb.checked = false;
-    });
-  }
-
-  // If any other checked → uncheck "None"
-  if (labelText !== 'none' && e.target.checked) {
-    checkboxes.forEach(cb => {
-      const cbLabel = cb.closest('.chip')
-        ?.querySelector('span')
-        ?.innerText.trim().toLowerCase();
-
-      if (cbLabel === 'none') cb.checked = false;
-    });
-  }
-
-  // Persist state
-  saveState();
-});
