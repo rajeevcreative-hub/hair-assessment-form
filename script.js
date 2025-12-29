@@ -271,3 +271,62 @@ function sendToLeadSquared(payload) {
     .then(data => console.log("LeadSquared SUCCESS:", data))
     .catch(err => console.error("LeadSquared ERROR:", err));
 }
+
+/* =========================
+   FILE UPLOAD UI FEEDBACK
+========================= */
+document.addEventListener('change', e => {
+  if (e.target.id !== 'uploadImage') return;
+
+  const files = Array.from(e.target.files);
+  if (!files.length) return;
+
+  const label = document.querySelector('label[for="uploadImage"] p');
+  if (!label) return;
+
+  let html = `<strong>${files.length} image(s) selected</strong><br>`;
+  files.forEach(file => {
+    html += `<small>• ${file.name}</small><br>`;
+  });
+
+  label.innerHTML = html;
+});
+
+
+/* =========================
+   NONE CHECKBOX LOGIC (FIXED)
+========================= */
+document.addEventListener('change', e => {
+  if (e.target.type !== 'checkbox') return;
+
+  const chip = e.target.closest('.chip');
+  const grid = chip?.closest('.chip-grid');
+  if (!grid) return;
+
+  const labelText = chip.querySelector('span')?.innerText
+    .trim()
+    .toLowerCase();
+
+  const checkboxes = grid.querySelectorAll('input[type="checkbox"]');
+
+  // If "None" checked → uncheck all others
+  if (labelText === 'none' && e.target.checked) {
+    checkboxes.forEach(cb => {
+      if (cb !== e.target) cb.checked = false;
+    });
+  }
+
+  // If any other checked → uncheck "None"
+  if (labelText !== 'none' && e.target.checked) {
+    checkboxes.forEach(cb => {
+      const cbLabel = cb.closest('.chip')
+        ?.querySelector('span')
+        ?.innerText.trim().toLowerCase();
+
+      if (cbLabel === 'none') cb.checked = false;
+    });
+  }
+
+  // Persist state
+  saveState();
+});
