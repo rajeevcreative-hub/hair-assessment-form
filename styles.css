@@ -459,3 +459,23 @@ button {
   color: #777;
   font-size: 12px;
 }
+
+
+/* =========================
+   FIX MOBILE INPUT WIDTH
+========================= */
+
+/* Make intl-tel-input take full width */
+.iti {
+  width: 100%;
+}
+
+/* Make the actual input full width */
+.iti input {
+  width: 100% !important;
+}
+
+/* Ensure form-group doesn't shrink */
+.form-group {
+  width: 100%;
+}
