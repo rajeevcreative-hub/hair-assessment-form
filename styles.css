@@ -161,7 +161,7 @@ button {
 }
 
 /* =========================
-   CARD GRID
+   CARD GRID (DESKTOP)
 ========================= */
 
 .card-grid {
@@ -185,7 +185,6 @@ button {
   align-items: center;
   gap: 16px;
   transition: all 0.25s ease;
-  max-width: 100%;
 }
 
 .card:hover {
@@ -209,7 +208,6 @@ button {
   border-radius: 50%;
   border: 2px solid #ccc;
   background: #fff;
-  position: relative;
 }
 
 .card input[type="radio"]:checked {
@@ -227,11 +225,6 @@ button {
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-}
-
-.card span {
-  font-size: 15px;
-  font-weight: 500;
 }
 
 /* =========================
@@ -272,7 +265,6 @@ button {
   display: flex;
   align-items: center;
   gap: 14px;
-  cursor: pointer;
 }
 
 /* =========================
@@ -293,7 +285,7 @@ button {
 }
 
 /* =========================
-   FILE UPLOAD
+   FILE UPLOAD (STABLE)
 ========================= */
 
 .upload-box {
@@ -334,7 +326,7 @@ button {
 }
 
 /* =========================
-   MOBILE FIXES (ONE BLOCK ONLY)
+   MOBILE (SINGLE SOURCE OF TRUTH)
 ========================= */
 
 @media (max-width: 768px) {
@@ -345,6 +337,7 @@ button {
 
   .top-steps {
     overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
   }
 
   .grid-2 {
@@ -355,25 +348,26 @@ button {
     grid-template-columns: 1fr;
   }
 
-  /* Generic cards */
-  .card:not(.hair-card) {
+  /* ALL cards become flex */
+  .card {
     display: flex;
     align-items: center;
     gap: 12px;
   }
 
-  /* Hair cards – FINAL FIX */
+  /* Hair pattern cards */
   .hair-card {
-    display: flex;
     flex-direction: column;
     align-items: flex-start;
   }
 
   .hair-images {
     width: 100%;
+    min-height: 90px;
     display: flex;
     justify-content: center;
-    margin-top: 10px;
+    align-items: center;
+    margin-top: 8px;
   }
 
   .hair-images img {
@@ -383,43 +377,5 @@ button {
 
   .chip {
     max-width: 100%;
-  }
-}
-
-/* =========================
-   SAFARI FINAL FIX – HAIR PATTERN CARDS
-========================= */
-
-@media (max-width: 768px) {
-
-  /* Force card to be flex ONLY */
-  .hair-pattern-grid .hair-card {
-    display: flex !important;
-    flex-direction: column !important;
-    align-items: flex-start !important;
-  }
-
-  /* Lock radio + text row */
-  .hair-pattern-grid .hair-card > input,
-  .hair-pattern-grid .hair-card .hair-text {
-    flex-shrink: 0;
-  }
-
-  /* Reserve image space BEFORE load */
-  .hair-pattern-grid .hair-images {
-    width: 100%;
-    min-height: 90px;       /* KEY FIX */
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin-top: 8px;
-  }
-
-  /* Force image sizing */
-  .hair-pattern-grid .hair-images img {
-    width: 80px;
-    height: auto;
-    max-width: 100%;
-    display: block;
   }
 }
