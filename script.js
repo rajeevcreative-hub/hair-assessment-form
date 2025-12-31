@@ -36,6 +36,32 @@ document.addEventListener('DOMContentLoaded', () => {
       "https://cdn.jsdelivr.net/npm/intl-tel-input@18.2.1/build/js/utils.js"
   });
 
+const ageInput = document.querySelector('input[name="age"]');
+
+if (ageInput) {
+  ageInput.addEventListener('input', () => {
+    // Remove non-digits
+    let value = ageInput.value.replace(/\D/g, '');
+
+    // Limit to 2 digits
+    if (value.length > 2) {
+      value = value.slice(0, 2);
+    }
+
+    ageInput.value = value;
+  });
+
+  ageInput.addEventListener('keydown', e => {
+    const allowed = ['Backspace', 'Delete', 'ArrowLeft', 'ArrowRight', 'Tab'];
+    if (allowed.includes(e.key)) return;
+
+    // Block non-numeric keys
+    if (!/^\d$/.test(e.key)) {
+      e.preventDefault();
+    }
+  });
+}
+
   // Allow only digits, India max 10
   mobileInput.addEventListener('input', () => {
     const country = iti.getSelectedCountryData();
