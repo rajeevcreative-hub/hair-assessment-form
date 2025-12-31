@@ -5,6 +5,7 @@
 * {
   box-sizing: border-box;
   font-family: 'Poppins', sans-serif;
+  -webkit-tap-highlight-color: transparent;
 }
 
 body {
@@ -18,6 +19,11 @@ h2 {
   margin-bottom: 20px;
   color: #222;
   text-align: center;
+}
+
+button,
+label {
+  touch-action: manipulation;
 }
 
 /* =========================
@@ -165,7 +171,7 @@ button {
 }
 
 /* =========================
-   RADIO CARDS (UNIVERSAL)
+   CARD (DESKTOP)
 ========================= */
 
 .card {
@@ -179,6 +185,7 @@ button {
   align-items: center;
   gap: 16px;
   transition: all 0.25s ease;
+  max-width: 100%;
 }
 
 .card:hover {
@@ -191,7 +198,10 @@ button {
   box-shadow: 0 6px 14px rgba(243,108,61,0.15);
 }
 
-/* Custom radio */
+/* =========================
+   RADIO
+========================= */
+
 .card input[type="radio"] {
   appearance: none;
   width: 18px;
@@ -200,12 +210,11 @@ button {
   border: 2px solid #ccc;
   background: #fff;
   position: relative;
-  cursor: pointer;
 }
 
 .card input[type="radio"]:checked {
   background: #f36c3d;
-  border-color: #ffffff;
+  border-color: #fff;
 }
 
 .card input[type="radio"]:checked::after {
@@ -223,30 +232,28 @@ button {
 .card span {
   font-size: 15px;
   font-weight: 500;
-  color: #222;
 }
 
 /* =========================
-   IMAGE CARDS
+   IMAGES
 ========================= */
 
 .card img {
   width: 56px;
   filter: grayscale(100%);
-  transition: filter 0.3s ease;
 }
 
-.card:hover img,
 .card:has(input:checked) img {
   filter: grayscale(0%);
 }
 
 .hair-images img {
   width: 80px;
+  display: block;
 }
 
 /* =========================
-   CHIPS (CHECKBOX)
+   CHIPS
 ========================= */
 
 .chip-grid {
@@ -257,64 +264,28 @@ button {
 }
 
 .chip {
-  min-width: 220px;
+  width: 100%;
+  max-width: 420px;
   padding: 14px 18px;
   border-radius: 999px;
   border: 1px solid #e2e2e2;
-  background: #fff;
   display: flex;
   align-items: center;
   gap: 14px;
   cursor: pointer;
-  transition: all 0.25s ease;
-}
-
-.chip:hover {
-  border-color: #f36c3d;
-  background: #fff7f3;
-}
-
-.chip input {
-  appearance: none;
-  width: 18px;
-  height: 18px;
-  border-radius: 5px;
-  border: 2px solid #ccc;
-  position: relative;
-}
-
-.chip input:checked {
-  background: #f36c3d;
-  border-color: #f36c3d;
-}
-
-.chip input:checked::after {
-  content: '';
-  width: 6px;
-  height: 10px;
-  border: solid #fff;
-  border-width: 0 2px 2px 0;
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -60%) rotate(45deg);
-}
-
-.chip:has(input:checked) {
-  background: #fff4ef;
-  border-color: #f36c3d;
 }
 
 /* =========================
-   FORM GROUP / ERRORS
+   FORM GROUP
 ========================= */
 
 .form-group {
   display: flex;
   flex-direction: column;
+  width: 100%;
 }
 
-.form-group .error-text {
+.error-text {
   min-height: 16px;
   font-size: 12px;
   color: red;
@@ -341,27 +312,35 @@ button {
   padding: 36px;
   text-align: center;
   cursor: pointer;
-  transition: 0.25s;
 }
 
-.upload-box label:hover {
-  border-color: #7bc1c0;
-  background: #e6f6f6;
-}
-
-.upload-content img {
-  width: 48px;
-  margin-bottom: 12px;
+.upload-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
 }
 
 /* =========================
-   MOBILE FIXES
+   INTL TEL INPUT
+========================= */
+
+.iti {
+  width: 100%;
+}
+
+.iti input {
+  width: 100% !important;
+}
+
+/* =========================
+   MOBILE FIXES (ONE BLOCK ONLY)
 ========================= */
 
 @media (max-width: 768px) {
 
   .container {
-    padding: 24px;
+    padding: 20px;
   }
 
   .top-steps {
@@ -376,164 +355,33 @@ button {
     grid-template-columns: 1fr;
   }
 
-  .card {
-    grid-template-columns: 22px 1fr auto;
-    padding: 16px;
+  /* Generic cards */
+  .card:not(.hair-card) {
+    display: flex;
+    align-items: center;
+    gap: 12px;
   }
 
-  .card img {
-    width: 48px;
+  /* Hair cards – FINAL FIX */
+  .hair-card {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
   }
-  
+
+  .hair-images {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    margin-top: 10px;
+  }
+
+  .hair-images img {
+    width: 90px;
+    height: auto;
+  }
+
   .chip {
-  width: 100%;
-  margin-left: 10px:
-  margin-right: 10px:
-  padding: 14px 18px;
-  border-radius: 999px;
-  border: 1px solid #e2e2e2;
-  background: #fff;
-  display: flex;
-  align-items: center;
-  gap: 14px;
-  cursor: pointer;
-  transition: all 0.25s ease;
-}
-
-
-
-
-/* =========================
-   INTL TEL INPUT FIX
-========================= */
-
-.iti {
-  width: 100%;
-}
-
-.iti__country-list {
-  z-index: 9999 !important;
-  max-height: 260px;
-  overflow-y: auto;
-}
-
-@media (max-width: 768px) {
-  .iti__country-list {
-    max-height: 50vh;
+    max-width: 100%;
   }
-}
-
-/* =========================
-   FILE UPLOAD – FINAL FIX
-========================= */
-
-.upload-box {
-  margin: 24px auto;
-  max-width: 520px;
-}
-
-.upload-label {
-  display: block;
-  border: 2px dashed #cfecec;
-  background: #eef9f9;
-  border-radius: 16px;
-  padding: 36px;
-  cursor: pointer;
-  transition: all 0.25s ease;
-  text-align: center;
-  position: relative;
-}
-
-.upload-label:hover {
-  border-color: #7bc1c0;
-  background: #e6f6f6;
-}
-
-.upload-label input {
-  position: absolute;
-  inset: 0;
-  opacity: 0;
-  cursor: pointer;
-}
-
-.upload-content img {
-  width: 48px;
-  margin-bottom: 12px;
-}
-
-.upload-content p {
-  font-size: 14px;
-  color: #333;
-}
-
-.upload-content span {
-  color: #4a6cf7;
-  font-weight: 500;
-  text-decoration: underline;
-}
-
-.upload-content small {
-  color: #777;
-  font-size: 12px;
-}
-
-
-/* =========================
-   FIX MOBILE INPUT WIDTH
-========================= */
-
-/* Make intl-tel-input take full width */
-.iti {
-  width: 100%;
-}
-
-/* Make the actual input full width */
-.iti input {
-  width: 100% !important;
-}
-
-/* Ensure form-group doesn't shrink */
-.form-group {
-  width: 100%;
-}
-
-
-/* =========================
-   UPLOAD – SELECTED STATE FIX
-========================= */
-
-.upload-box label {
-  display: flex;
-  justify-content: center;
-}
-
-.upload-content {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 10px;
-}
-
-.upload-content p {
-  text-align: center;
-  line-height: 1.4;
-}
-
-/* When files are selected */
-.upload-content p strong {
-  display: block;
-  margin-bottom: 6px;
-  font-size: 15px;
-  color: #222;
-}
-
-.upload-content p small {
-  display: block;
-  font-size: 12px;
-  color: #666;
-}
-
-/* File list spacing */
-.upload-content p small:not(:last-child) {
-  margin-bottom: 4px;
 }
